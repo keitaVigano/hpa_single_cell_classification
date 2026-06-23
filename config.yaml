@@ -1,0 +1,21 @@
+# obbligatorie
+path_data: "data/train"
+path_masks: "data/train_masks"
+csv_path: "data/train.csv"
+output_path: "outputs"
+device: "cuda"
+
+# opzionali (hanno default nel codice)
+model_name: "resnet"
+num_classes: 19
+val_split: 0.2
+random_state: 42
+img_size: 224
+batch_size: 32
+lr: 0.0001
+patience: 5
+save_path: "best_model.pth"
+num_workers: 2
+epochs: 30
+wandb_project: "hpa-single-cell"
+wandb_run_name: null
