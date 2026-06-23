@@ -24,7 +24,7 @@ if __name__ == "__main__":
         model=model,
         project=cfg.get("wandb_project", "hpa-single-cell"),
         run_name=cfg.get("wandb_run_name", None),
-        config=cfg.__dict__,  # logga tutta la config come hyperparams
+        config=cfg.__dict__,
     )
 
     # --- trainer ---

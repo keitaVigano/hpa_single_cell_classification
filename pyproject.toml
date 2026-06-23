@@ -10,13 +10,5 @@ dependencies = [
     "opencv-python>=4.13.0.92",
     "pandas>=3.0.3",
     "pillow>=12.2.0",
-    "wandb",
+    "wandb>=0.17.0",
 ]
-
-[tool.uv.workspace]
-members = [
-    "wandb",
-]
-
-[tool.uv.sources]
-wandb = { workspace = true }
