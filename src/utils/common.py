@@ -38,9 +38,8 @@ def get_train_val_datasets(
     random_state: int = 42,
 ) -> tuple[HPADataset, HPADataset]:
     label_map = build_label_map(csv_path)
-    all_image_ids = list(label_map.keys())
+    all_image_ids = list(label_map.keys())[:100]
 
-    # split a livello di image_id, NON di cella → evita leakage
     train_ids, val_ids = train_test_split(
         all_image_ids,
         test_size=val_split,
