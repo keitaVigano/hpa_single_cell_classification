@@ -12,17 +12,35 @@ class HPADataset(Dataset):
         self.path_masks = path_masks
         self.img_size = img_size
 
+        cell_masks_dir = os.path.join(path_masks, "cell_masks_v5", "train")
+        nuc_masks_dir = os.path.join(path_masks, "nuc_masks_v5", "train")
+
         self.samples = []
         for image_id in image_ids:
             if image_id not in label_map:
                 continue
-            mask = self.load_img_channel(image_id, path_masks)
+
+            mask = None
+            mask_dir = None
+
+            cell_mask_path = os.path.join(cell_masks_dir, f"{image_id}.png")
+            nuc_mask_path = os.path.join(nuc_masks_dir, f"{image_id}.png")
+
+            if os.path.exists(cell_mask_path):
+                mask_dir = cell_masks_dir
+            elif os.path.exists(nuc_mask_path):
+                mask_dir = nuc_masks_dir
+            else:
+                continue
+
+            mask = self.load_img_channel(image_id, mask_dir)
             if mask is None:
                 continue
+
             cell_ids = np.unique(mask)
             cell_ids = cell_ids[cell_ids != 0]
             for cell_id in cell_ids:
-                self.samples.append((image_id, cell_id))
+                self.samples.append((image_id, cell_id, mask_dir))
 
     def __len__(self):
         return len(self.samples)
@@ -37,10 +55,10 @@ class HPADataset(Dataset):
         return crop
 
     def __getitem__(self, idx):
-        image_id, cell_id = self.samples[idx]
+        image_id, cell_id, mask_dir = self.samples[idx]
 
         img = self.load_img(image_id, self.path_data)
-        mask = self.load_img_channel(image_id, self.path_masks)
+        mask = self.load_img_channel(image_id, mask_dir)
 
         crop = HPADataset.get_crops(img, mask, cell_id, self.img_size)
 
@@ -68,7 +86,7 @@ class HPADataset(Dataset):
 
     @staticmethod
     def load_img_channel(image_id: str, path: str) -> np.ndarray | None:
-        mask_path: str = f"{path}/{image_id}.png"
+        mask_path = os.path.join(path, f"{image_id}.png")
         if not os.path.exists(mask_path):
             return None
         return cv2.imread(mask_path, cv2.IMREAD_UNCHANGED)

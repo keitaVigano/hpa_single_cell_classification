@@ -1,11 +1,10 @@
-# obbligatorie
-path_data: "data/train"
-path_masks: "data/train_masks"
-csv_path: "data/train.csv"
+path_data: "/kaggle/input/hpa-single-cell-image-classification/train"
+path_masks: "/kaggle/input/datasets/christofhenkel/hpa-single-cell-3rd-place-dieter-masks"
+csv_path: "/kaggle/input/hpa-single-cell-image-classification/train.csv"
 output_path: "outputs"
 device: "cuda"
 
-# opzionali (hanno default nel codice)
+# model
 model_name: "resnet"
 num_classes: 19
 val_split: 0.2
