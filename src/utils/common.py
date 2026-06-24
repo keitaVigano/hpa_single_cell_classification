@@ -11,7 +11,6 @@ import pandas as pd
 import torch.nn as nn
 import wandb
 
-
 def label_to_vector(label_str: str) -> np.ndarray:
     vector = np.zeros(19, dtype=np.float32)
     for idx in label_str.split("|"):
@@ -72,6 +71,15 @@ def init_wandb_logger(
     config: dict | None = None,
     watch_model: bool = True,
 ) -> wandb.sdk.wandb_run.Run:
+
+    wandb_api_key = os.environ.get("WANDB_API_KEY")
+    if wandb_api_key is None:
+        raise RuntimeError(
+            "WANDB_API_KEY non trovata in os.environ. "
+            "Impostala nella cella del notebook prima di lanciare uv run."
+        )
+    wandb.login(key=wandb_api_key)
+
     run = wandb.init(
         project=project,
         name=run_name,
