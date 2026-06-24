@@ -1,6 +1,6 @@
-path_data: "/kaggle/input/hpa-single-cell-image-classification/train"
+path_data: "/kaggle/input/competitions/hpa-single-cell-image-classification/train/"
 path_masks: "/kaggle/input/datasets/christofhenkel/hpa-single-cell-3rd-place-dieter-masks"
-csv_path: "/kaggle/input/hpa-single-cell-image-classification/train.csv"
+csv_path: "/kaggle/input/competitions/hpa-single-cell-image-classification/train.csv"
 output_path: "outputs"
 device: "cuda"
 
