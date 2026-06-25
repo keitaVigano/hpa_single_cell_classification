@@ -11,6 +11,8 @@ class HPADataset(Dataset):
         self.path_data = path_data
         self.path_masks = path_masks
         self.img_size = img_size
+        self._img_cache: dict[str, np.ndarray] = {}
+        self._mask_cache: dict[str, np.ndarray] = {}
 
         cell_masks_dir = os.path.join(path_masks, "cell_masks_v5", "train")
         nuc_masks_dir = os.path.join(path_masks, "nuc_masks_v5", "train")
@@ -54,17 +56,25 @@ class HPADataset(Dataset):
         crop = cv2.resize(crop, (img_size, img_size))
         return crop
 
+    def _get_image(self, image_id: str) -> np.ndarray:
+        if image_id not in self._img_cache:
+            self._img_cache[image_id] = self.load_img(image_id, self.path_data)
+        return self._img_cache[image_id]
+
+    def _get_mask(self, image_id: str, mask_dir: str) -> np.ndarray:
+        if image_id not in self._mask_cache:
+            self._mask_cache[image_id] = self.load_img_channel(image_id, mask_dir)
+        return self._mask_cache[image_id]
+
     def __getitem__(self, idx):
         image_id, cell_id, mask_dir = self.samples[idx]
 
-        img = self.load_img(image_id, self.path_data)
-        mask = self.load_img_channel(image_id, mask_dir)
+        img = self._get_image(image_id)
+        mask = self._get_mask(image_id, mask_dir)
 
         crop = HPADataset.get_crops(img, mask, cell_id, self.img_size)
-
         crop = crop.astype(np.float32) / 65535.0
         crop = torch.from_numpy(crop).permute(2, 0, 1)
-
         label = torch.from_numpy(self.label_map[image_id])
 
         return crop, label
