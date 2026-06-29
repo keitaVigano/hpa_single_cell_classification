@@ -3,7 +3,7 @@ import torch
 import numpy as np
 import cv2
 import os
-
+from tqdm import tqdm
 
 class HPADataset(Dataset):
     def __init__(self, image_ids, label_map, path_data, path_masks, img_size=224):
@@ -18,7 +18,7 @@ class HPADataset(Dataset):
         nuc_masks_dir = os.path.join(path_masks, "nuc_masks_v5", "train")
 
         self.samples = []
-        for image_id in image_ids:
+        for image_id in tqdm(image_ids, desc=f"Building samples ({len(image_ids)} images)"):
             if image_id not in label_map:
                 continue
 
